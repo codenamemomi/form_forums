@@ -16,7 +16,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
-
+    
 # Include the contact form routes
 app.include_router(contact_router, prefix="/api/v1")
 
