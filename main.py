@@ -7,9 +7,13 @@ app = FastAPI()
 # Allow frontend to send requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change this to your frontend domain for better security
+    allow_origins=[
+        "https://s33jay.vercel.app",  # Your actual frontend domain
+        "http://localhost:3000",
+        "http://localhost:8000",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
