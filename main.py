@@ -9,7 +9,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://s33jay.vercel.app",  # Your actual frontend domain
+        "https://omomi.vercel.app",
         "http://localhost:3000",
         "http://localhost:8000",
         "http://localhost:5173"
