@@ -10,6 +10,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://omomi.vercel.app",
+        "https://w-sepia-iota.vercel.app",
         "http://localhost:3000",
         "http://localhost:8000",
         "http://localhost:5173"
