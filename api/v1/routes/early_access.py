@@ -28,7 +28,7 @@ class EarlyAccessForm(BaseModel):
 configuration = sib_api_v3_sdk.Configuration()
 configuration.api_key['api-key'] = os.getenv("BREVO_API_KEY")
 
-def send_early_access_email(form_data: EarlyAccessForm):
+def send_early_access_email(form_data: EarlyAccessForm, organization_label: str = "Ree-fond"):
     try:
         # Check if credentials are configured
         brevo_api_key = os.getenv("BREVO_API_KEY")
@@ -43,9 +43,11 @@ def send_early_access_email(form_data: EarlyAccessForm):
         api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
         
         # Create email content with Professional/Corporate theme
-        subject = f"New Early Access Request: {form_data.name} - {form_data.organization}"
+        organization_name = organization_label or form_data.organization or "Ree-fond"
+        subject = f"New {organization_name} Early Access Request: {form_data.name}"
         
         current_time = datetime.now().strftime("%B %d, %Y at %I:%M %p UTC")
+        program_label = "Infrastructure Pilot Program" if organization_name.lower() == "ree-fond" else "Waitlist Program"
         
         pain_point_section = ""
         if form_data.painPoint:
@@ -68,31 +70,31 @@ def send_early_access_email(form_data: EarlyAccessForm):
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>New Early Access Registration</title>
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1f2937; background-color: #f3f4f6; margin: 0; padding: 0;">
-            <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
-                
-                <!-- Header -->
-                <div style="background-color: #1f2937; padding: 32px 40px; text-align: center;">
-                    <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700; letter-spacing: -0.025em;">Ree-fond</h1>
-                    <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 14px;">Infrastructure Pilot Program</p>
+        <body style="margin: 0; padding: 0; background: #f3f4f6; font-family: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #111827;">
+            <div style="max-width: 640px; margin: 32px auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);">
+                <div style="background: #111827; padding: 28px 32px; text-align: center;">
+                    <div style="display: inline-block; padding: 6px 12px; border: 1px solid #374151; background: #f9fafb; border-radius: 999px; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #374151; margin-bottom: 12px;">
+                        New Submission
+                    </div>
+                    <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.04em;">{organization_name}</h1>
+                    <p style="margin: 8px 0 0; color: #d1d5db; font-size: 14px;">{program_label}</p>
                 </div>
 
-                <!-- Main Content -->
-                <div style="padding: 40px;">
-                    <div style="margin-bottom: 24px;">
-                        <span style="background-color: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">New Registration</span>
-                        <h2 style="margin: 16px 0 8px 0; font-size: 20px; color: #111827;">Early Access Applicant</h2>
-                        <p style="margin: 0; color: #6b7280; font-size: 14px;">Received on {current_time}</p>
+                <div style="padding: 32px 32px 24px;">
+                    <div style="margin-bottom: 20px;">
+                        <span style="display: inline-block; background: #f3f4f6; color: #374151; padding: 6px 12px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; border: 1px solid #e5e7eb;">
+                            New Registration
+                        </span>
+                        <h2 style="margin: 12px 0 8px; font-size: 24px; line-height: 1.2; color: #111827;">Early Access Applicant</h2>
+                        <p style="margin: 0; color: #6b7280; font-size: 13px;">Received on {current_time}</p>
                     </div>
 
-                    <div style="background-color: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; padding: 24px;">
-                        
-                        <!-- Contact Info Grid -->
-                        <table style="width: 100%; border-collapse: collapse;">
+                    <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
                             <tr>
-                                <td style="padding-bottom: 16px; width: 50%; vertical-align: top;">
-                                    <h4 style="margin: 0 0 4px 0; color: #374151; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Full Name</h4>
-                                    <p style="margin: 0; color: #111827; font-weight: 500;">{form_data.name}</p>
+                                <td width="50%" valign="top" style="padding: 0 10px 16px 0;">
+                                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6b7280; margin-bottom: 6px;">Full Name</div>
+                                    <div style="font-size: 15px; font-weight: 600; color: #111827;">{form_data.name}</div>
                                 </td>
                                 <td style="padding-bottom: 16px; width: 50%; vertical-align: top;">
                                     <h4 style="margin: 0 0 4px 0; color: #374151; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Organization</h4>
@@ -100,19 +102,19 @@ def send_early_access_email(form_data: EarlyAccessForm):
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-bottom: 16px; width: 50%; vertical-align: top;">
-                                    <h4 style="margin: 0 0 4px 0; color: #374151; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Email Address</h4>
-                                    <a href="mailto:{form_data.email}" style="margin: 0; color: #2563eb; text-decoration: none; font-weight: 500;">{form_data.email}</a>
+                                <td width="50%" valign="top" style="padding: 0 10px 16px 0;">
+                                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6b7280; margin-bottom: 6px;">Email Address</div>
+                                    <a href="mailto:{form_data.email}" style="font-size: 15px; font-weight: 600; color: #1d4ed8; text-decoration: none;">{form_data.email}</a>
                                 </td>
-                                <td style="padding-bottom: 16px; width: 50%; vertical-align: top;">
-                                    <h4 style="margin: 0 0 4px 0; color: #374151; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Phone Number</h4>
-                                    <p style="margin: 0; color: #111827; font-weight: 500;">{form_data.phone}</p>
+                                <td width="50%" valign="top" style="padding: 0 0 16px 10px;">
+                                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6b7280; margin-bottom: 6px;">Phone Number</div>
+                                    <div style="font-size: 15px; font-weight: 600; color: #111827;">{form_data.phone}</div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="vertical-align: top;">
-                                    <h4 style="margin: 0 0 4px 0; color: #374151; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">User Type</h4>
-                                    <div style="display: inline-block; background-color: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 4px; font-size: 13px; font-weight: 600;">
+                                <td colspan="2" valign="top" style="padding: 0;">
+                                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6b7280; margin-bottom: 6px;">User Type</div>
+                                    <div style="display: inline-block; background: #e5e7eb; color: #374151; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;">
                                         {form_data.type.replace('_', ' ').title()}
                                     </div>
                                 </td>
@@ -122,15 +124,16 @@ def send_early_access_email(form_data: EarlyAccessForm):
                         {pain_point_section}
                     </div>
 
-                    <div style="margin-top: 32px; text-align: center;">
-                        <a href="mailto:{form_data.email}" style="display: inline-block; background-color: #1f2937; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px;">Reply to Applicant</a>
+                    <div style="margin-top: 24px; text-align: center;">
+                        <a href="mailto:{form_data.email}" style="display: inline-block; background: #111827; color: #ffffff; padding: 12px 22px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                            Reply to Applicant
+                        </a>
                     </div>
                 </div>
 
-                <!-- Footer -->
-                <div style="background-color: #f3f4f6; padding: 24px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
-                    <p style="margin: 0; color: #6b7280; font-size: 12px;">© {datetime.now().year} Ree-fond Systems. All rights reserved.</p>
-                    <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">This is an automated notification from the early access portal.</p>
+                <div style="background: #f9fafb; padding: 20px 32px; text-align: center; border-top: 1px solid #e5e7eb;">
+                    <p style="margin: 0; color: #6b7280; font-size: 12px;">© {datetime.now().year} {organization_name}. All rights reserved.</p>
+                    <p style="margin: 8px 0 0; color: #9ca3b8; font-size: 11px;">This is an automated notification from the early access portal.</p>
                 </div>
             </div>
         </body>
@@ -154,13 +157,13 @@ def send_early_access_email(form_data: EarlyAccessForm):
         Received on: {current_time}
         
         --------------------------------------------------
-        © {datetime.now().year} Ree-fond Systems
+        © {datetime.now().year} {organization_name} Systems
         """
         
         # Create sendSmtpEmail instance
         send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
             to=[{"email": receiver_email, "name": "Command Center"}],
-            sender={"email": sender_email, "name": "Ree-fond Pilot Operations"},
+            sender={"email": sender_email, "name": f"{organization_name} Pilot Operations"},
             subject=subject,
             html_content=html_content,
             text_content=text_content,
@@ -188,9 +191,27 @@ async def submit_early_access_form(form: EarlyAccessForm, background_tasks: Back
         )
     
     # Add background task to send email
-    background_tasks.add_task(send_early_access_email, form)
+    background_tasks.add_task(send_early_access_email, form, "Ree-fond")
     
     return {
         "message": "You're on the list. We will contact you when Phase 1 pilots begin.",
+        "status": "success"
+    }
+
+@early_access_router.post("/ws-waitlist")
+async def submit_ws_waitlist(form: EarlyAccessForm, background_tasks: BackgroundTasks):
+    """Dedicated endpoint for the W's waitlist signup flow."""
+    brevo_api_key = os.getenv("BREVO_API_KEY")
+
+    if not brevo_api_key:
+        raise HTTPException(
+            status_code=500,
+            detail="W's waitlist is currently unavailable. Please try again later."
+        )
+
+    background_tasks.add_task(send_early_access_email, form, "W")
+
+    return {
+        "message": "You've been added to the W's waitlist.",
         "status": "success"
     }
